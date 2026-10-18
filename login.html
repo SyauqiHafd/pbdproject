@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log In</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Soft multi-color gradient background — no flat/singular color */
+        .bg-custom {
+            background: linear-gradient(135deg, #f0ffe0 0%, #fce7f3 50%, #e5fee0 100%);
+        }
+
+        /* Decorative blurred circles behind the card */
+        .circle {
+            position: absolute;   /* float freely, positioned relative to body */
+            border-radius: 50%;   /* make them circles */
+            filter: blur(25px);   /* soft glow effect instead of hard edges */
+            opacity: 0.6;
+            z-index: 0;           /* stay BEHIND the card */
+            pointer-events: none; /* never block clicks */
+        }
+
+        /* Individual circle sizes, colors, and positions */
+        .circle-1 { width: 350px; height: 350px; background: #f0ff65; top: -80px;  left: -80px; }
+        .circle-2 { width: 300px; height: 300px; background: #f0ff65; bottom: -60px; right: -60px; }
+        .circle-3 { width: 200px; height: 200px; background: #f0ff65; top: 55%;    left: 12%; }
+    </style>
+
+</head>
+
+<body class="d-flex justify-content-center align-items-center vh-100 bg-custom position-relative overflow-hidden">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    <div class="circle circle-3"></div>
+    <div class="card shadow border-2 z-1 position-relative" style="width: 100%; max-width: 400px;">
+        <div class="card-body p-4 p-md-5">
+            <!-- p-4 = padding 1.5rem on small screens, p-md-5 = 3rem on medium+ screens -->
+
+            <!-- ===== HEADER ===== -->
+            <div class="text-center mb-4">
+                <h3 class="fw-bold">PT. Jaya Group Pengadaan</h3>
+                <p class="text-muted mb-0">Login to continue</p>
+            </div>
+            <!-- text-center -> center align | mb-4 -> margin-bottom
+                 text-muted  -> gray secondary text | mb-0 -> remove bottom margin -->
+
+            <!-- ===== LOGIN FORM ===== -->
+            <form>
+                <!-- Name field -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">Username</label>
+                    <input type="name" class="form-control" id="name"
+                           placeholder="Username" required>
+                </div>
+                <!-- form-label / form-control -> Bootstrap form styling -->
+
+                <!-- Password field + "Forgot password" link on the same line -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <label for="password" class="form-label">Password</label>
+                        <a href="#" class="small text-decoration-none">Forgot password?</a>
+                    </div>
+                    <input type="password" class="form-control" id="password"
+                           placeholder="Enter your password" required>
+                </div>
+
+                <!-- Remember me checkbox -->
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="remember">
+                    <label class="form-check-label" for="remember">Remember me</label>
+                </div>
+
+                <!-- Submit button: stretched full width -->
+                <button type="submit" class="btn w-100" style="background-color: rgb(233, 187, 71);color: beige;">Log In</button>
+            </form>
+
+            <!-- Divider with "or" in the middle -->
+            <div class="d-flex align-items-center my-4">
+                <hr class="flex-grow-1">
+                <span class="px-3 text-muted small">or</span>
+                <hr class="flex-grow-1">
+            </div>
+
+            <!-- ===== SOCIAL LOGIN (optional extra) ===== -->
+            <form action="dashboard_admin.html">
+                <button class="btn btn-outline-primary w-100 mb-2">
+                    Continue with Google
+                </button>
+            </form>
+
+            <!-- ===== FOOTER: link to sign-up ===== -->
+            <div class="text-center mt-4">
+                <span class="text-muted">Don't have an account?</span>
+                <a href="signup.html" class="text-decoration-none">Sign up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS bundle (only needed if you use components like modals/dropdowns;
+         harmless to include for a login page) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

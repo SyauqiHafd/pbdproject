@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Staff</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <!-- ==================== BAGIAN ATAS: TOP NAVBAR ====================
+       Navbar horizontal menempel di atas layar (sticky).
+       Berisi brand aplikasi, pencarian barang, dan nama kasir. -->
+  <nav class="sticky top-0 z-30 text-white flex items-center px-4 h-12"
+       style="background-color:#4f5007;">
+    <!-- Brand khusus kasir -->
+    <a href="#" class="font-bold text-lg mr-6 whitespace-nowrap">Jaya Group Pengadaan</a>
+
+    <!-- Menu kanan: profil kasir yang sedang login -->
+    <div class="ml-auto flex items-center gap-4 text-sm">
+      <span class="hidden sm:inline">🛒</span>
+      <span class="hidden sm:inline text-gray-300">|</span>
+      <span>Kasir: Farhan</span>
+    </div>
+  </nav>
+
+  <div class="flex">
+
+    <!-- ==================== BAGIAN KIRI: SIDEBAR ====================
+         Sidebar navigasi vertikal, hanya berisi menu yang boleh
+         diakses oleh role kasir sesuai use case diagram. -->
+    <aside class="w-56 text-white fixed top-12 bottom-0 left-0 overflow-y-auto"
+           style="background-color:#4f5007;">
+
+      <!-- Menu utama dashboard -->
+      <div class="px-4 pt-4">
+        <a href="#" onclick="showMenu('dashboard')"
+           class="menu-link block px-3 py-2 rounded text-sm font-semibold bg-primary">
+           Dashboard
+        </a>
+      </div>
+
+      <!-- Heading pemisah menu -->
+      <h6 class="px-4 mt-5 mb-2 text-xs uppercase text-gray-400">Menu Kasir</h6>
+      <ul class="px-2 space-y-1 text-sm">
+
+        <!-- Submenu: Barang (untuk melihat harga jual saat transaksi) -->
+        <li><a href="#" onclick="showMenu('barang')"
+               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Barang</a></li>
+
+        <!-- Submenu: Margin Penjualan (info margin yang berlaku) -->
+        <li><a href="#" onclick="showMenu('margin')"
+               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Margin Penjualan</a></li>
+      </ul>
+    </aside>
+
+    <!-- ==================== BAGIAN KONTEN UTAMA ====================
+         Konten digeser ke kanan (ml-56) agar tidak tertutup sidebar.
+         Terdiri dari 3 halaman: dashboard, barang, margin. -->
+    <main class="flex-grow ml-56 p-6">
+
+      <!-- ---------- HALAMAN DASHBOARD KASIR ---------- -->
+      <section id="menu-dashboard" class="menu-page">
+        <h1 class="text-2xl font-bold mb-6">Dashboard Kasir</h1>
+
+        <!-- Kartu ringkasan kondisi toko untuk kasir -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-white rounded shadow p-4">
+            <h5 class="text-gray-500 text-sm">Jumlah Barang Aktif</h5>
+            <p class="text-3xl font-bold mt-1">5</p>
+          </div>
+          <div class="bg-white rounded shadow p-4">
+            <h5 class="text-gray-500 text-sm">Margin Berlaku Hari Ini</h5>
+            <p class="text-3xl font-bold mt-1">10.00%</p>
+          </div>
+          <div class="bg-white rounded shadow p-4">
+            <h5 class="text-gray-500 text-sm">Transaksi Hari Ini</h5>
+            <p class="text-3xl font-bold mt-1">N/A</p>
+          </div>
+        </div>
+
+        <!-- Shortcut cepat ke menu kasir -->
+        <div class="mt-6 flex gap-3">
+          <a href="#" onclick="showMenu('barang')" class="bg-primary text-white px-4 py-2 rounded text-sm">Lihat Barang</a>
+          <a href="#" onclick="showMenu('margin')" class="bg-gray-600 text-white px-4 py-2 rounded text-sm">Lihat Margin</a>
+        </div>
+      </section>
+
+      <!-- ---------- HALAMAN BARANG (harga jual untuk kasir) ---------- -->
+      <section id="menu-barang" class="menu-page hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h1 class="text-2xl font-bold">Data Barang</h1>
+          <!-- Kasir tidak bisa tambah barang, hanya melihat -->
+        </div>
+        <div class="bg-white rounded shadow overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-200 text-gray-700">
+              <tr>
+                <th class="px-4 py-3">ID</th><th class="px-4 py-3">Nama</th>
+                <th class="px-4 py-3">Satuan</th><th class="px-4 py-3">Harga Jual</th>
+                <th class="px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y">
+              <tr><td class="px-4 py-2">1</td><td class="px-4 py-2">Gulungan baja</td><td class="px-4 py-2">Meter</td><td class="px-4 py-2">1.340.000</td><td class="px-4 py-2">Aktif</td></tr>
+              <tr><td class="px-4 py-2">2</td><td class="px-4 py-2">Baja galvanis</td><td class="px-4 py-2">Ton</td><td class="px-4 py-2">2.200.000</td><td class="px-4 py-2">Aktif</td></tr>
+              <tr><td class="px-4 py-2">3</td><td class="px-4 py-2">Larutan Natrium Hidroksida</td><td class="px-4 py-2">Liter</td><td class="px-4 py-2">178.000</td><td class="px-4 py-2">Aktif</td></tr>
+              <tr><td class="px-4 py-2">4</td><td class="px-4 py-2">Nafta</td><td class="px-4 py-2">Liter</td><td class="px-4 py-2">279.000</td><td class="px-4 py-2">Aktif</td></tr>
+              <tr><td class="px-4 py-2">5</td><td class="px-4 py-2">Zirkonium Dioksida</td><td class="px-4 py-2">Galon</td><td class="px-4 py-2">805.000</td><td class="px-4 py-2">Aktif</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ---------- HALAMAN MARGIN PENJUALAN (info saja untuk kasir) ---------- -->
+      <section id="menu-margin" class="menu-page hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h1 class="text-2xl font-bold">Margin Penjualan</h1>
+        </div>
+        <div class="bg-white rounded shadow overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-200 text-gray-700">
+              <tr><th class="px-4 py-3">ID</th><th class="px-4 py-3">Margin (%)</th><th class="px-4 py-3">Berlaku Sejak</th><th class="px-4 py-3">Status</th></tr>
+            </thead>
+            <tbody class="divide-y">
+              <tr><td class="px-4 py-2">1</td><td class="px-4 py-2">10.00%</td><td class="px-4 py-2">2026-01-05 09:00</td><td class="px-4 py-2">Aktif</td></tr>
+              <tr><td class="px-4 py-2">2</td><td class="px-4 py-2">15.00%</td><td class="px-4 py-2">2026-01-05 09:05</td><td class="px-4 py-2">Nonaktif</td></tr>
+              <tr><td class="px-4 py-2">3</td><td class="px-4 py-2">20.00%</td><td class="px-4 py-2">2026-02-10 10:30</td><td class="px-4 py-2">Nonaktif</td></tr>
+              <tr><td class="px-4 py-2">4</td><td class="px-4 py-2">25.00%</td><td class="px-4 py-2">2026-02-15 11:00</td><td class="px-4 py-2">Nonaktif</td></tr>
+              <tr><td class="px-4 py-2">5</td><td class="px-4 py-2">12.50%</td><td class="px-4 py-2">2026-03-20 14:20</td><td class="px-4 py-2">Nonaktif</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==================== JAVASCRIPT ====================
+       Sama dengan dashboard admin: mengganti halaman aktif
+       dan menandai menu sidebar yang sedang dipilih. -->
+  <script>
+    function showMenu(menu) {
+      // 1. Sembunyikan semua halaman
+      document.querySelectorAll('.menu-page').forEach(function(page) {
+        page.classList.add('hidden');
+      });
+      // 2. Tampilkan halaman yang dipilih
+      document.getElementById('menu-' + menu).classList.remove('hidden');
+      // 3. Reset status aktif semua link
+      document.querySelectorAll('.menu-link').forEach(function(link) {
+        link.classList.remove('bg-primary');
+      });
+      // 4. Tandai link aktif
+      event.target.closest('.menu-link').classList.add('bg-primary');
+    }
+  </script>
+</body>
+</html>

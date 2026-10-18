@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <!-- ==================== BAGIAN ATAS: TOP NAVBAR ====================
+       Navbar horizontal yang menempel di bagian atas layar (sticky).
+       Berisi logo/brand, pencarian, dan menu profil admin. -->
+  <nav class="sticky top-0 z-30 bg-dark text-white flex items-center px-4 h-12"
+       style="background-color:#4f5007;">
+    <!-- Brand / nama aplikasi -->
+    <a href="#" class="font-bold text-lg mr-6 whitespace-nowrap">Jaya Group Pengadaan</a>
+
+    <!-- Menu kanan: notifikasi & profil user -->
+    <div class="ml-auto flex items-center gap-4 text-sm">
+      <span class="hidden sm:inline text-gray-300">|</span>
+      <span>Admin</span>
+    </div>
+  </nav>
+
+  <div class="flex">
+    <!-- ==================== BAGIAN KIRI: SIDEBAR ====================
+         Sidebar navigasi vertikal, menempel di kiri layar.
+         Fixed height sampai bawah layar agar mirip contoh Bootstrap. -->
+    <aside class="w-56 bg-dark text-white fixed top-12 bottom-0 left-0 overflow-y-auto"
+           style="background-color:#4f5007;">
+
+      <!-- Menu utama dashboard (selalu aktif) -->
+      <div class="px-4 pt-4">
+        <a href="#" onclick="showMenu('dashboard')"
+           class="menu-link block px-3 py-2 rounded text-sm font-semibold bg-primary">
+           Dashboard
+        </a>
+      </div>
+
+      <!-- Heading pemisah antar grup menu -->
+      <h6 class="px-4 mt-5 mb-2 text-xs uppercase text-gray-400">Menu Utama</h6>
+      <ul class="px-2 space-y-1 text-sm">
+
+        <!-- Submenu: Data Barang -->
+        <li><a href="#" onclick="showMenu('barang')"
+               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Barang</a></li>
+
+        <!-- Submenu: Data Satuan -->
+        <li><a href="#" onclick="showMenu('satuan')"
+               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Satuan</a></li>
+
+        <!-- Submenu: Data Vendor -->
+        <li><a href="#" onclick="showMenu('vendor')"
+               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Vendor</a></li>
+
+        <!-- Submenu: Margin Penjualan -->
+        <li><a href="#" onclick="showMenu('margin')"
+               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Margin Penjualan</a></li>
+
+        <!-- Heading pemisah menu keamanan -->
+        <h6 class="px-2 pt-4 pb-1 text-xs uppercase text-gray-400">Pengaturan</h6>
+
+        <!-- Submenu: Data Pengguna (user) -->
+        <li><a href="#" onclick="showMenu('pengguna')"
+               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Pengguna</a></li>
+
+        <!-- Submenu: Data Role -->
+        <li><a href="#" onclick="showMenu('role')"
+               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Role</a></li>
+      </ul>
+    </aside>
+
+    <!-- ==================== BAGIAN KONTEN UTAMA ====================
+         Konten di geser ke kanan sebesar lebar sidebar (ml-56 = 224px).
+         Setiap section memiliki id yang akan di-show/hide via JavaScript. -->
+    <main class="flex-grow ml-56 p-6">
+
+      <!-- ---------- HALAMAN DASHBOARD (ringkasan) ---------- -->
+      <section id="menu-dashboard" class="menu-page">
+        <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+        <!-- Kartu ringkasan statistik -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white rounded shadow p-4">
+            <h5 class="text-gray-500 text-sm">Total Barang</h5>
+            <p class="text-3xl font-bold mt-1">5</p>
+          </div>
+          <div class="bg-white rounded shadow p-4">
+            <h5 class="text-gray-500 text-sm">Total Vendor</h5>
+            <p class="text-3xl font-bold mt-1">5</p>
+          </div>
+          <div class="bg-white rounded shadow p-4">
+            <h5 class="text-gray-500 text-sm">Total Pengguna</h5>
+            <p class="text-3xl font-bold mt-1">5</p>
+          </div>
+          <div class="bg-white rounded shadow p-4">
+            <h5 class="text-gray-500 text-sm">Margin Aktif</h5>
+            <p class="text-3xl font-bold mt-1">1</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- HALAMAN BARANG ---------- -->
+      <section id="menu-barang" class="menu-page hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h1 class="text-2xl font-bold">Data Barang</h1>
+          <button class="text-blue-600 px-4 py-2 rounded text-sm">+ Tambah Barang</button>
+        </div>
+        <div class="bg-white rounded shadow overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-200 text-gray-700">
+              <tr>
+                <th class="px-4 py-3">ID</th><th class="px-4 py-3">Nama</th>
+                <th class="px-4 py-3">Jenis</th><th class="px-4 py-3">Satuan</th>
+                <th class="px-4 py-3">Harga</th><th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3">Aksi</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y">
+              <tr><td class="px-4 py-2">1</td><td class="px-4 py-2">Gulungan baja</td><td class="px-4 py-2">S</td><td class="px-4 py-2">Meter</td><td class="px-4 py-2">1.340.000</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">2</td><td class="px-4 py-2">Baja galvanis</td><td class="px-4 py-2">S</td><td class="px-4 py-2">Ton</td><td class="px-4 py-2">2.200.000</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">3</td><td class="px-4 py-2">Larutan Natrium Hidroksida</td><td class="px-4 py-2">L</td><td class="px-4 py-2">Liter</td><td class="px-4 py-2">178.000</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">4</td><td class="px-4 py-2">Nafta</td><td class="px-4 py-2">L</td><td class="px-4 py-2">Liter</td><td class="px-4 py-2">279.000</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">5</td><td class="px-4 py-2">Zirkonium Dioksida</td><td class="px-4 py-2">G</td><td class="px-4 py-2">Galon</td><td class="px-4 py-2">805.000</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ---------- HALAMAN SATUAN ---------- -->
+      <section id="menu-satuan" class="menu-page hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h1 class="text-2xl font-bold">Data Satuan</h1>
+          <button class="text-blue-600 px-4 py-2 rounded text-sm">+ Tambah Satuan</button>
+        </div>
+        <div class="bg-white rounded shadow overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-200 text-gray-700">
+              <tr><th class="px-4 py-3">ID</th><th class="px-4 py-3">Nama Satuan</th><th class="px-4 py-3">Status</th><th class="px-4 py-3">Aksi</th></tr>
+            </thead>
+            <tbody class="divide-y">
+              <tr><td class="px-4 py-2">1</td><td class="px-4 py-2">Ton</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">2</td><td class="px-4 py-2">Liter</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">3</td><td class="px-4 py-2">Galon</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">4</td><td class="px-4 py-2">Kilogram</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">5</td><td class="px-4 py-2">Meter</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ---------- HALAMAN VENDOR ---------- -->
+      <section id="menu-vendor" class="menu-page hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h1 class="text-2xl font-bold">Data Vendor</h1>
+          <button class="text-blue-600 px-4 py-2 rounded text-sm">+ Tambah Vendor</button>
+        </div>
+        <div class="bg-white rounded shadow overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-200 text-gray-700">
+              <tr><th class="px-4 py-3">ID</th><th class="px-4 py-3">Nama Vendor</th><th class="px-4 py-3">Badan Hukum</th><th class="px-4 py-3">Status</th><th class="px-4 py-3">Aksi</th></tr>
+            </thead>
+            <tbody class="divide-y">
+              <tr><td class="px-4 py-2">1</td><td class="px-4 py-2">PT Yapindo Jaya Abadi</td><td class="px-4 py-2">PT</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">2</td><td class="px-4 py-2">PT Mayora Indah</td><td class="px-4 py-2">PT</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">3</td><td class="px-4 py-2">PT Indofood Sukses Makmur</td><td class="px-4 py-2">PT</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">4</td><td class="px-4 py-2">CV JMIP</td><td class="px-4 py-2">CV</td><td class="px-4 py-2">Nonaktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">5</td><td class="px-4 py-2">UD Sumber Rejeki Jaya</td><td class="px-4 py-2">UD</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ---------- HALAMAN MARGIN PENJUALAN ---------- -->
+      <section id="menu-margin" class="menu-page hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h1 class="text-2xl font-bold">Margin Penjualan</h1>
+          <button class="text-blue-600 px-4 py-2 rounded text-sm">+ Tambah Margin</button>
+        </div>
+        <div class="bg-white rounded shadow overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-200 text-gray-700">
+              <tr><th class="px-4 py-3">ID</th><th class="px-4 py-3">Margin (%)</th><th class="px-4 py-3">Dibuat</th><th class="px-4 py-3">Diubah</th><th class="px-4 py-3">Status</th><th class="px-4 py-3">Aksi</th></tr>
+            </thead>
+            <tbody class="divide-y">
+              <tr><td class="px-4 py-2">1</td><td class="px-4 py-2">10.00%</td><td class="px-4 py-2">2026-01-05 09:00</td><td class="px-4 py-2">2026-01-05 09:00</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">2</td><td class="px-4 py-2">15.00%</td><td class="px-4 py-2">2026-01-05 09:05</td><td class="px-4 py-2">2026-01-05 09:05</td><td class="px-4 py-2">Nonaktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">3</td><td class="px-4 py-2">20.00%</td><td class="px-4 py-2">2026-02-10 10:30</td><td class="px-4 py-2">2026-02-10 10:30</td><td class="px-4 py-2">Nonaktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">4</td><td class="px-4 py-2">25.00%</td><td class="px-4 py-2">2026-02-15 11:00</td><td class="px-4 py-2">2026-02-15 11:00</td><td class="px-4 py-2">Nonaktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">5</td><td class="px-4 py-2">12.50%</td><td class="px-4 py-2">2026-03-20 14:20</td><td class="px-4 py-2">2026-03-20 14:20</td><td class="px-4 py-2">Nonaktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ---------- HALAMAN PENGGUNA (user) ---------- -->
+      <section id="menu-pengguna" class="menu-page hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h1 class="text-2xl font-bold">Data Pengguna</h1>
+          <button class="text-blue-600 px-4 py-2 rounded text-sm">+ Tambah Pengguna</button>
+        </div>
+        <div class="bg-white rounded shadow overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-200 text-gray-700">
+              <tr><th class="px-4 py-3">ID</th><th class="px-4 py-3">Username</th><th class="px-4 py-3">Role</th><th class="px-4 py-3">Aksi</th></tr>
+            </thead>
+            <tbody class="divide-y">
+              <tr><td class="px-4 py-2">1</td><td class="px-4 py-2">Erwin</td><td class="px-4 py-2">Supervisor</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">2</td><td class="px-4 py-2">Shinta</td><td class="px-4 py-2">Akuntan</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">3</td><td class="px-4 py-2">Erwan</td><td class="px-4 py-2">Manager</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">4</td><td class="px-4 py-2">Steven</td><td class="px-4 py-2">Kepala Cabang</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">5</td><td class="px-4 py-2">Farhan</td><td class="px-4 py-2">Staff Gudang</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ---------- HALAMAN ROLE ---------- -->
+      <section id="menu-role" class="menu-page hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h1 class="text-2xl font-bold">Data Role</h1>
+          <button class="text-blue-600 px-4 py-2 rounded text-sm">+ Tambah Role</button>
+        </div>
+        <div class="bg-white rounded shadow overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-200 text-gray-700">
+              <tr><th class="px-4 py-3">ID</th><th class="px-4 py-3">Nama Role</th><th class="px-4 py-3">Aksi</th></tr>
+            </thead>
+            <tbody class="divide-y">
+              <tr><td class="px-4 py-2">1</td><td class="px-4 py-2">Supervisor</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">2</td><td class="px-4 py-2">Akuntan</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">3</td><td class="px-4 py-2">Manager</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">4</td><td class="px-4 py-2">Kepala Cabang</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+              <tr><td class="px-4 py-2">5</td><td class="px-4 py-2">Staff Gudang</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==================== JAVASCRIPT ====================
+       Fungsi untuk menampilkan halaman (section) sesuai menu
+       sidebar yang diklik, dan memberi efek aktif pada menu. -->
+  <script>
+    // Fungsi dipanggil saat link sidebar diklik
+    function showMenu(menu) {
+      // 1. Sembunyikan SEMUA halaman terlebih dahulu
+      document.querySelectorAll('.menu-page').forEach(function(page) {
+        page.classList.add('hidden');
+      });
+
+      // 2. Tampilkan hanya halaman yang dipilih (berdasarkan id)
+      document.getElementById('menu-' + menu).classList.remove('hidden');
+
+      // 3. Hapus status 'aktif' (warna biru) dari semua link sidebar
+      document.querySelectorAll('.menu-link').forEach(function(link) {
+        link.classList.remove('bg-primary');
+      });
+
+      // 4. Tandai link yang sedang diklik sebagai aktif
+      event.target.closest('.menu-link').classList.add('bg-primary');
+    }
+  </script>
+</body>
+</html>

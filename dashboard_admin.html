@@ -119,12 +119,190 @@
                 <th class="px-4 py-3">Aksi</th>
               </tr>
             </thead>
-            <tbody class="divide-y">
-              <tr><td class="px-4 py-2">1</td><td class="px-4 py-2">Gulungan baja</td><td class="px-4 py-2">S</td><td class="px-4 py-2">Meter</td><td class="px-4 py-2">1.340.000</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
-              <tr><td class="px-4 py-2">2</td><td class="px-4 py-2">Baja galvanis</td><td class="px-4 py-2">S</td><td class="px-4 py-2">Ton</td><td class="px-4 py-2">2.200.000</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
-              <tr><td class="px-4 py-2">3</td><td class="px-4 py-2">Larutan Natrium Hidroksida</td><td class="px-4 py-2">L</td><td class="px-4 py-2">Liter</td><td class="px-4 py-2">178.000</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
-              <tr><td class="px-4 py-2">4</td><td class="px-4 py-2">Nafta</td><td class="px-4 py-2">L</td><td class="px-4 py-2">Liter</td><td class="px-4 py-2">279.000</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
-              <tr><td class="px-4 py-2">5</td><td class="px-4 py-2">Zirkonium Dioksida</td><td class="px-4 py-2">G</td><td class="px-4 py-2">Galon</td><td class="px-4 py-2">805.000</td><td class="px-4 py-2">Aktif</td><td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td></tr>
+            <tbody class="divide-y" id="tbody-barang, tbody-satuan, tbody-vendor,tbody-margin,tbody-pengguna,tbody-role,tb">
+              <script>
+                const API_URL = "api.php?menu=";
+
+                const menuList = ["barang", "satuan", "vendor", "margin", "pengguna", "role"];
+
+                function statusBadge(s) {
+                  if (s == 1) return '<span class="text-green-600 font-semibold">Aktif</span>';
+                  return '<span class="text-red-600 font-semibold">Nonaktif</span>';
+                }
+
+                function jenisLabel(j) {
+                  if (j === 'S') return 'Padat';
+                  if (j === 'L') return 'Cair';
+                  if (j === 'G') return 'Gas';
+                  return j;
+                }
+
+                function badanLabel(b) {
+                  if (b === 'P') return 'PT';
+                  if (b === 'C') return 'CV';
+                  if (b === 'U') return 'UD';
+                  if (b === 'D') return 'Toko';
+                  return b;
+                }
+
+                function vendorStatus(s) {
+                  if (s === 'Y') return '<span class="text-green-600 font-semibold">Aktif</span>';
+                  return '<span class="text-red-600 font-semibold">Tidak Aktif</span>';
+                }
+
+                function rupiah(n) {
+                  return Number(n).toLocaleString("id-ID");
+                }
+
+                function kosongkanTabel(tbodyId, colspan) {
+                  document.getElementById(tbodyId).innerHTML =
+                    '<tr><td colspan="' + colspan + '" class="px-4 py-3 text-center text-gray-400">Memuat data...</td></tr>';
+                }
+
+                function isiTabel(tbodyId, htmlBaris, colspan) {
+                  if (htmlBaris === "") {
+                    document.getElementById(tbodyId).innerHTML =
+                      '<tr><td colspan="' + colspan + '" class="px-4 py-3 text-center text-gray-400">Data kosong</td></tr>';
+                  } else {
+                    document.getElementById(tbodyId).innerHTML = htmlBaris;
+                  }
+                }
+
+
+                async function loadSatuan() {
+                  kosongkanTabel("tbody-satuan", 4);
+                  const res  = await fetch(API_URL + "satuan");
+                  const json = await res.json();
+                  let html = "";
+                  // Loop setiap baris hasil query view skala (id, name, status)
+                  json.data.forEach(r => {
+                    html += `<tr>
+                      <td class="px-4 py-2">${r.id}</td>
+                      <td class="px-4 py-2">${r.name}</td>
+                      <td class="px-4 py-2">${statusBadge(r.status)}</td>
+                      <td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td>
+                    </tr>`;
+                  });
+                  isiTabel("tbody-satuan", html, 4);
+                }
+
+
+                async function loadBarang() {
+                  kosongkanTabel("tbody-barang", 7);
+                  const res  = await fetch(API_URL + "barang");
+                  const json = await res.json();
+                  let html = "";
+                  json.data.forEach(r => {
+                    html += `<tr>
+                      <td class="px-4 py-2">${r.id}</td>
+                      <td class="px-4 py-2">${r.name}</td>
+                      <td class="px-4 py-2">${jenisLabel(r.jenis)}</td>
+                      <td class="px-4 py-2">${r.satuan}</td>
+                      <td class="px-4 py-2">${rupiah(r.harga)}</td>
+                      <td class="px-4 py-2">${statusBadge(r.status)}</td>
+                      <td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td>
+                    </tr>`;
+                  });
+                  isiTabel("tbody-barang", html, 7);
+                }
+
+
+                async function loadVendor() {
+                  kosongkanTabel("tbody-vendor", 5);
+                  const res  = await fetch(API_URL + "vendor");
+                  const json = await res.json();
+                  let html = "";
+                  json.data.forEach(r => {
+                    html += `<tr>
+                      <td class="px-4 py-2">${r.id}</td>
+                      <td class="px-4 py-2">${r.nama_corp}</td>
+                      <td class="px-4 py-2">${badanLabel(r.badan)}</td>
+                      <td class="px-4 py-2">${vendorStatus(r.status)}</td>
+                      <td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td>
+                    </tr>`;
+                  });
+                  isiTabel("tbody-vendor", html, 5);
+                }
+
+
+                async function loadMargin() {
+                  kosongkanTabel("tbody-margin", 7);
+                  const res  = await fetch(API_URL + "margin");
+                  const json = await res.json();
+                  let html = "";
+                  json.data.forEach(r => {
+                    html += `<tr>
+                      <td class="px-4 py-2">${r.id}</td>
+                      <td class="px-4 py-2">${Number(r.persen).toFixed(2)}%</td>
+                      <td class="px-4 py-2">${r.tglbuat}</td>
+                      <td class="px-4 py-2">${r.tglupdate}</td>
+                      <td class="px-4 py-2">${statusBadge(r.status)}</td>
+                      <td class="px-4 py-2">${r.pengguna}</td>
+                      <td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td>
+                    </tr>`;
+                  });
+                  isiTabel("tbody-margin", html, 7);
+                }
+
+
+                async function loadPengguna() {
+                  kosongkanTabel("tbody-pengguna", 4);
+                  const res  = await fetch(API_URL + "pengguna");
+                  const json = await res.json();
+                  let html = "";
+                  json.data.forEach(r => {
+                    html += `<tr>
+                      <td class="px-4 py-2">${r.id}</td>
+                      <td class="px-4 py-2">${r.username}</td>
+                      <td class="px-4 py-2">${r.role}</td>
+                      <td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td>
+                    </tr>`;
+                  });
+                  isiTabel("tbody-pengguna", html, 4);
+                }
+
+
+                async function loadRole() {
+                  kosongkanTabel("tbody-role", 3);
+                  const res  = await fetch(API_URL + "role");
+                  const json = await res.json();
+                  let html = "";
+                  json.data.forEach(r => {
+                    html += `<tr>
+                      <td class="px-4 py-2">${r.idrole}</td>
+                      <td class="px-4 py-2">${r.nama_role}</td>
+                      <td class="px-4 py-2"><a href="#" class="text-blue-600">Edit</a></td>
+                    </tr>`;
+                  });
+                  isiTabel("tbody-role", html, 3);
+                }
+
+                const loaderMap = {
+                  satuan:   loadSatuan,
+                  barang:   loadBarang,
+                  vendor:   loadVendor,
+                  margin:   loadMargin,
+                  pengguna: loadPengguna,
+                  role:     loadRole
+                };
+
+
+                const showMenuAsli = showMenu; 
+                showMenu = function(menu) {
+                  showMenuAsli(menu);          
+
+                  if (loaderMap[menu]) {
+                    loaderMap[menu]();
+                  }
+                };
+
+
+                window.addEventListener("load", function() {
+                  menuList.forEach(function(m) {
+                    if (loaderMap[m]) loaderMap[m]();
+                  });
+                });
+              </script>
             </tbody>
           </table>
         </div>

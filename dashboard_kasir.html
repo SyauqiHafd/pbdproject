@@ -126,12 +126,87 @@
             <thead class="bg-gray-200 text-gray-700">
               <tr><th class="px-4 py-3">ID</th><th class="px-4 py-3">Margin (%)</th><th class="px-4 py-3">Berlaku Sejak</th><th class="px-4 py-3">Status</th></tr>
             </thead>
-            <tbody class="divide-y">
-              <tr><td class="px-4 py-2">1</td><td class="px-4 py-2">10.00%</td><td class="px-4 py-2">2026-01-05 09:00</td><td class="px-4 py-2">Aktif</td></tr>
-              <tr><td class="px-4 py-2">2</td><td class="px-4 py-2">15.00%</td><td class="px-4 py-2">2026-01-05 09:05</td><td class="px-4 py-2">Nonaktif</td></tr>
-              <tr><td class="px-4 py-2">3</td><td class="px-4 py-2">20.00%</td><td class="px-4 py-2">2026-02-10 10:30</td><td class="px-4 py-2">Nonaktif</td></tr>
-              <tr><td class="px-4 py-2">4</td><td class="px-4 py-2">25.00%</td><td class="px-4 py-2">2026-02-15 11:00</td><td class="px-4 py-2">Nonaktif</td></tr>
-              <tr><td class="px-4 py-2">5</td><td class="px-4 py-2">12.50%</td><td class="px-4 py-2">2026-03-20 14:20</td><td class="px-4 py-2">Nonaktif</td></tr>
+            <tbody class="divide-y" id="tbody-barang, tbody-margin">
+                <script>
+
+                  const API_URL = "api.php?menu=";
+
+                  function statusBadge(s) {
+                    if (s == 1) return '<span class="text-green-600 font-semibold">Aktif</span>';
+                    return '<span class="text-red-600 font-semibold">Nonaktif</span>';
+                  }
+
+                  function jenisLabel(j) {
+                    if (j === 'S') return 'Padat';
+                    if (j === 'L') return 'Cair';
+                    if (j === 'G') return 'Gas';
+                    return j;
+                  }
+
+                  function rupiah(n) {
+                    return Number(n).toLocaleString("id-ID");
+                  }
+
+                  function kosongkanTabel(tbodyId, colspan) {
+                    document.getElementById(tbodyId).innerHTML =
+                      '<tr><td colspan="' + colspan + '" class="px-4 py-3 text-center text-gray-400">Memuat data...</td></tr>';
+                  }
+
+                  function isiTabel(tbodyId, htmlBaris, colspan) {
+                    if (htmlBaris === "") {
+                      document.getElementById(tbodyId).innerHTML =
+                        '<tr><td colspan="' + colspan + '" class="px-4 py-3 text-center text-gray-400">Data kosong</td></tr>';
+                    } else {
+                      document.getElementById(tbodyId).innerHTML = htmlBaris;
+                    }
+                  }
+
+                  async function loadBarang() {
+                    kosongkanTabel("tbody-barang", 5);
+                    const res  = await fetch(API_URL + "barang");
+                    const json = await res.json();
+                    let html = "";
+                    json.data.forEach(r => {
+                      html += `<tr>
+                        <td class="px-4 py-2">${r.id}</td>
+                        <td class="px-4 py-2">${r.name}</td>
+                        <td class="px-4 py-2">${r.satuan}</td>
+                        <td class="px-4 py-2">${rupiah(r.harga)}</td>
+                        <td class="px-4 py-2">${statusBadge(r.status)}</td>
+                      </tr>`;
+                    });
+                    isiTabel("tbody-barang", html, 5);
+                  }
+
+                  async function loadMargin() {
+                    kosongkanTabel("tbody-margin", 4);
+                    const res  = await fetch(API_URL + "margin");
+                    const json = await res.json();
+                    let html = "";
+                    json.data.forEach(r => {
+                      html += `<tr>
+                        <td class="px-4 py-2">${r.id}</td>
+                        <td class="px-4 py-2">${Number(r.persen).toFixed(2)}%</td>
+                        <td class="px-4 py-2">${r.tglbuat}</td>
+                        <td class="px-4 py-2">${statusBadge(r.status)}</td>
+                      </tr>`;
+                    });
+                    isiTabel("tbody-margin", html, 4);
+                  }
+
+                  const loaderMap = { barang: loadBarang, margin: loadMargin };
+
+                  const showMenuAsli = showMenu;
+                  showMenu = function(menu) {
+                    showMenuAsli(menu);
+                    if (loaderMap[menu]) loaderMap[menu]();
+                  };
+
+                  window.addEventListener("load", function() {
+                    loadBarang();
+                    loadMargin();
+                  });
+                </script>
             </tbody>
           </table>
         </div>

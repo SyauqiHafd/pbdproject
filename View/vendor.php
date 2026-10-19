@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../models/Vendor.php';
+require_once('bootstrap.php');
 $vendor = new Vendor();
 $data   = $vendor->all();
 

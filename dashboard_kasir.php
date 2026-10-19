@@ -74,11 +74,11 @@
       </section>
 
       <section id="menu-barang" class="menu-page hidden">
-      <?php include 'views/kasir/barang.php'; ?>
+      <?php include 'Views/barang.php'; ?>
     </section>
 
       <section id="menu-margin" class="menu-page hidden">
-      <?php include 'views/kasir/margin.php'; ?>
+      <?php include 'Views/margin.php'; ?>
     </section>
 
     </main>

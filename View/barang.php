@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../models/Barang.php';
+require_once ('bootstrap.php');
 $barang = new Barang();
 $data   = $barang->all(); // READ semua barang
 

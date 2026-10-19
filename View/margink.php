@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../models/Margin.php';
+require_once('bootstrap.php');
 $margin = new Margin();
 $data   = $margin->all();
 ?>

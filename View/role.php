@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../models/Role.php';
+require_once('bootstrap.php');
 $role = new Role();
 $data = $role->all();
 ?>

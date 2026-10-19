@@ -95,25 +95,25 @@
 
       <!-- ---------- HALAMAN SATUAN ---------- -->
       <section id="menu-satuan" class="menu-page hidden">
-      <?php include 'views/admin/satuan.php'; ?>
+      <?php include 'Views/satuan.php'; ?>
     </section>
 
       <!-- ---------- HALAMAN VENDOR ---------- -->
       <section id="menu-vendor" class="menu-page hidden">
-      <?php include 'views/admin/vendor.php'; ?>
+      <?php include 'Views/vendor.php'; ?>
     </section>
 
       <!-- ---------- HALAMAN MARGIN PENJUALAN ---------- -->
       <section id="menu-margin" class="menu-page hidden">
-      <?php include 'views/admin/margin.php'; ?>
+      <?php include 'Views/margin.php'; ?>
     </section>
 
       <section id="menu-pengguna" class="menu-page hidden">
-      <?php include 'views/admin/pengguna.php'; ?>
+      <?php include 'Views/pengguna.php'; ?>
     </section>
 
       <section id="menu-role" class="menu-page hidden">
-      <?php include 'views/admin/role.php'; ?>
+      <?php include 'Views/role.php'; ?>
     </section>
 
     </main>

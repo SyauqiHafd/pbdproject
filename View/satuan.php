@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../models/Satuan.php';
+require_once('bootstrap.php');
 $satuan = new Satuan();
 $data   = $satuan->all();
 ?>

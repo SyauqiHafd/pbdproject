@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../models/Pengguna.php';
+require_once('bootstrap.php');
 $pengguna = new Pengguna();
 $data     = $pengguna->all();
 ?>

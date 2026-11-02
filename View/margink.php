@@ -1,25 +1,22 @@
-<?php
-require_once('bootstrap.php');
-$margin = new Margin();
-$data   = $margin->all();
-?>
-<div class="flex justify-between items-center mb-4">
-  <h1 class="text-2xl font-bold">Margin Penjualan</h1>
+<?php $data = $margin->all(); ?>
+<div class="page-head">
+  <div class="page-head-title"><h1>Margin Penjualan</h1><span class="badge"><?= count($data) ?> data</span></div>
 </div>
-<div class="bg-white rounded shadow overflow-x-auto">
-  <table class="w-full text-sm text-left">
-    <thead class="bg-gray-200 text-gray-700">
+<div class="tbl-wrap">
+  <table class="tbl">
+    <thead>
       <tr><th class="px-4 py-3">ID</th><th class="px-4 py-3">Margin</th><th class="px-4 py-3">Berlaku Sejak</th><th class="px-4 py-3">Status</th></tr>
     </thead>
-    <tbody class="divide-y">
+    <tbody>
       <?php foreach ($data as $row): ?>
       <tr>
-        <td class="px-4 py-2"><?= $row['id'] ?></td>
+        <td class="px-4 py-2"><?= Html::e($row['id']) ?></td>
         <td class="px-4 py-2"><?= number_format($row['persen'], 2) ?>%</td>
-        <td class="px-4 py-2"><?= $row['tglbuat'] ?></td>
-        <td class="px-4 py-2"><?= $row['status'] == 1 ? 'Aktif' : 'Nonaktif' ?></td>
+        <td class="px-4 py-2"><?= Html::e($row['tglbuat']) ?></td>
+        <td class="px-4 py-2"><?= Label::status($row['status'] == 1) ?></td>
       </tr>
       <?php endforeach; ?>
+      <?php if (!$data): ?><tr class="empty"><td colspan="4">Belum ada data.</td></tr><?php endif; ?>
     </tbody>
   </table>
 </div>

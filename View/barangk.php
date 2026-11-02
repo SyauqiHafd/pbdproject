@@ -1,31 +1,28 @@
-<?php
-require_once('bootstrap.php');
-$barang = new Barang();
-$data   = $barang->all();
-?>
-<div class="flex justify-between items-center mb-4">
-  <h1 class="text-2xl font-bold">Data Barang</h1>
+<?php $data = $barang->all(); ?>
+<div class="page-head">
+  <div class="page-head-title"><h1>Data Barang</h1><span class="badge"><?= count($data) ?> data</span></div>
 </div>
-<div class="bg-white rounded shadow overflow-x-auto">
-  <table class="w-full text-sm text-left">
-    <thead class="bg-gray-200 text-gray-700">
+<div class="tbl-wrap">
+  <table class="tbl">
+    <thead>
       <tr>
         <th class="px-4 py-3">ID</th><th class="px-4 py-3">Nama</th>
         <th class="px-4 py-3">Jenis</th><th class="px-4 py-3">Satuan</th>
         <th class="px-4 py-3">Harga Jual</th><th class="px-4 py-3">Status</th>
       </tr>
     </thead>
-    <tbody class="divide-y">
+    <tbody>
       <?php foreach ($data as $row): ?>
       <tr>
-        <td class="px-4 py-2"><?= $row['id'] ?></td>
-        <td class="px-4 py-2"><?= htmlspecialchars($row['name']) ?></td>
-        <td class="px-4 py-2"><?= $row['jenis'] ?></td>
-        <td class="px-4 py-2"><?= $row['satuan'] ?></td>
+        <td class="px-4 py-2"><?= Html::e($row['id']) ?></td>
+        <td class="px-4 py-2"><?= Html::e($row['name']) ?></td>
+        <td class="px-4 py-2"><?= Html::e(Label::jenis($row['jenis'])) ?></td>
+        <td class="px-4 py-2"><?= Html::e($row['satuan']) ?></td>
         <td class="px-4 py-2"><?= number_format($row['harga'], 0, ',', '.') ?></td>
-        <td class="px-4 py-2"><?= $row['status'] == 1 ? 'Aktif' : 'Nonaktif' ?></td>
+        <td class="px-4 py-2"><?= Label::status($row['status'] == 1) ?></td>
       </tr>
       <?php endforeach; ?>
+      <?php if (!$data): ?><tr class="empty"><td colspan="6">Belum ada data.</td></tr><?php endif; ?>
     </tbody>
   </table>
 </div>

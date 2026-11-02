@@ -1,138 +1,88 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Admin</title>
+<?php
+require_once __DIR__ . '/bootstrap.php';
 
-  <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+$auth = new AuthController();
+$user = $auth->requireRole('admin');          // wajib login sebagai admin
 
-<body class="bg-gray-100 font-sans">
+$barang   = new Barang();
+$satuan   = new Satuan();
+$vendor   = new Vendor();
+$margin   = new Margin();
+$pengguna = new Pengguna();
+$role     = new Role();
 
-  <nav class="sticky top-0 z-30 bg-dark text-white flex items-center px-4 h-12"
-       style="background-color:#212529;">
-    <!-- Brand / nama aplikasi -->
-    <a href="#" class="font-bold text-lg mr-6 whitespace-nowrap">Jaya group Pengadaan</a>
+$home = (new DashboardController($user))->admin();
 
-    <!-- Form pencarian cepat di navbar -->
-    <form class="hidden md:flex flex-grow max-w-md">
-      <input type="text" placeholder="Cari..."
-             class="w-full rounded px-3 py-1 text-sm text-gray-900 focus:outline-none">
-    </form>
+// model yang punya modal tambah/ubah/hapus
+$modals = ['barang' => $barang, 'satuan' => $satuan, 'vendor' => $vendor,
+           'margin' => $margin, 'pengguna' => $pengguna, 'role' => $role];
 
-    <!-- Menu kanan: notifikasi & profil user -->
-    <div class="ml-auto flex items-center gap-4 text-sm">
-      <span>Admin</span>
-    </div>
-  </nav>
+$menus = [
+    ['heading' => null, 'items' => [
+        ['key' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'home'],
+    ]],
+    ['heading' => 'Menu Utama', 'items' => [
+        ['key' => 'barang', 'label' => 'Barang',           'icon' => 'box'],
+        ['key' => 'satuan', 'label' => 'Satuan',           'icon' => 'ruler'],
+        ['key' => 'vendor', 'label' => 'Vendor',           'icon' => 'building'],
+        ['key' => 'margin', 'label' => 'Margin Penjualan', 'icon' => 'percent'],
+    ]],
+    ['heading' => 'Pengaturan', 'items' => [
+        ['key' => 'pengguna', 'label' => 'Pengguna', 'icon' => 'users'],
+        ['key' => 'role',     'label' => 'Role',     'icon' => 'shield'],
+    ]],
+    ['heading' => 'Transaksi', 'items' => [
+        ['key' => 'pengadaan', 'label' => 'Pengadaan',           'icon' => 'clipboard'],
+        ['key' => 'penerimaan', 'label' => 'Penerimaan',           'icon' => 'inbox'],
+        ['key' => 'penjualaan', 'label' => 'Penjualaan',           'icon' => 'shop'],
+        ['key' => 'retur', 'label' => 'Retur',           'icon' => 'rewind'],
+        ['key' => 'kartustok', 'label' => 'Kartu stok',           'icon' => 'folder']
+    ]]
+];
 
-  <div class="flex">
-    <aside class="w-56 bg-dark text-white fixed top-12 bottom-0 left-0 overflow-y-auto"
-           style="background-color:#212529;">
-      <div class="px-4 pt-4">
-        <a href="#" onclick="showMenu('dashboard')"
-           class="menu-link block px-3 py-2 rounded text-sm font-semibold bg-primary">
-           Dashboard
-        </a>
-      </div>
+$keys   = ['dashboard', 'barang', 'satuan', 'vendor', 'margin', 'pengguna', 'role'];
+$active = in_array($_GET['menu'] ?? '', $keys, true) ? $_GET['menu'] : 'dashboard';
 
-      <h6 class="px-4 mt-5 mb-2 text-xs uppercase text-gray-400">Menu Utama</h6>
-      <ul class="px-2 space-y-1 text-sm">
+$pageTitle         = 'Dashboard Admin';
+$roleChip          = 'Admin';
+$searchPlaceholder = 'Cari...';
 
-        <li><a href="#" onclick="showMenu('barang')"
-               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Barang</a></li>
+include __DIR__ . '/View/layout/header.php';
+?>
 
-        <li><a href="#" onclick="showMenu('satuan')"
-               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Satuan</a></li>
-
-        <li><a href="#" onclick="showMenu('vendor')"
-               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Vendor</a></li>
-
-        <li><a href="#" onclick="showMenu('margin')"
-               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Margin Penjualan</a></li>
-
-        <h6 class="px-2 pt-4 pb-1 text-xs uppercase text-gray-400">Pengaturan</h6>
-
-        <li><a href="#" onclick="showMenu('pengguna')"
-               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Pengguna</a></li>
-
-        <li><a href="#" onclick="showMenu('role')"
-               class="menu-link block px-3 py-2 rounded hover:bg-gray-700">> Role</a></li>
-      </ul>
-    </aside>
-
-    <main class="flex-grow ml-56 p-6">
-
-      <section id="menu-dashboard" class="menu-page">
-        <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
-        <!-- Kartu ringkasan statistik -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white rounded shadow p-4">
-            <h5 class="text-gray-500 text-sm">Total Barang</h5>
-            <p class="text-3xl font-bold mt-1">5</p>
-          </div>
-          <div class="bg-white rounded shadow p-4">
-            <h5 class="text-gray-500 text-sm">Total Vendor</h5>
-            <p class="text-3xl font-bold mt-1">5</p>
-          </div>
-          <div class="bg-white rounded shadow p-4">
-            <h5 class="text-gray-500 text-sm">Total Pengguna</h5>
-            <p class="text-3xl font-bold mt-1">5</p>
-          </div>
-          <div class="bg-white rounded shadow p-4">
-            <h5 class="text-gray-500 text-sm">Margin Aktif</h5>
-            <p class="text-3xl font-bold mt-1">1</p>
-          </div>
-        </div>
+      <!-- ---------- HALAMAN DASHBOARD (ringkasan) ---------- -->
+      <section id="menu-dashboard" class="menu-page<?= $active === 'dashboard' ? '' : ' hidden' ?>">
+        <?php include __DIR__ . '/View/partials/home.php'; ?>
       </section>
 
       <!-- ---------- HALAMAN BARANG ---------- -->
-      <section id="menu-barang" class="menu-page hidden">
-      <?php include 'views/admin/barang.php'; ?>
-    </section>
+      <section id="menu-barang" class="menu-page<?= $active === 'barang' ? '' : ' hidden' ?>">
+        <?php include __DIR__ . '/View/barang.php'; ?>
+      </section>
 
       <!-- ---------- HALAMAN SATUAN ---------- -->
-      <section id="menu-satuan" class="menu-page hidden">
-      <?php include 'Views/satuan.php'; ?>
-    </section>
+      <section id="menu-satuan" class="menu-page<?= $active === 'satuan' ? '' : ' hidden' ?>">
+        <?php include __DIR__ . '/View/satuan.php'; ?>
+      </section>
 
       <!-- ---------- HALAMAN VENDOR ---------- -->
-      <section id="menu-vendor" class="menu-page hidden">
-      <?php include 'Views/vendor.php'; ?>
-    </section>
+      <section id="menu-vendor" class="menu-page<?= $active === 'vendor' ? '' : ' hidden' ?>">
+        <?php include __DIR__ . '/View/vendor.php'; ?>
+      </section>
 
       <!-- ---------- HALAMAN MARGIN PENJUALAN ---------- -->
-      <section id="menu-margin" class="menu-page hidden">
-      <?php include 'Views/margin.php'; ?>
-    </section>
+      <section id="menu-margin" class="menu-page<?= $active === 'margin' ? '' : ' hidden' ?>">
+        <?php include __DIR__ . '/View/margin.php'; ?>
+      </section>
 
-      <section id="menu-pengguna" class="menu-page hidden">
-      <?php include 'Views/pengguna.php'; ?>
-    </section>
+      <!-- ---------- HALAMAN PENGGUNA ---------- -->
+      <section id="menu-pengguna" class="menu-page<?= $active === 'pengguna' ? '' : ' hidden' ?>">
+        <?php include __DIR__ . '/View/pengguna.php'; ?>
+      </section>
 
-      <section id="menu-role" class="menu-page hidden">
-      <?php include 'Views/role.php'; ?>
-    </section>
+      <!-- ---------- HALAMAN ROLE ---------- -->
+      <section id="menu-role" class="menu-page<?= $active === 'role' ? '' : ' hidden' ?>">
+        <?php include __DIR__ . '/View/role.php'; ?>
+      </section>
 
-    </main>
-  </div>
-
-  <script>
-    function showMenu(menu) {
-      document.querySelectorAll('.menu-page').forEach(function(page) {
-        page.classList.add('hidden');
-      });
-
-      document.getElementById('menu-' + menu).classList.remove('hidden');
-
-      document.querySelectorAll('.menu-link').forEach(function(link) {
-        link.classList.remove('bg-primary');
-      });
-
-      event.target.closest('.menu-link').classList.add('bg-primary');
-    }
-  </script>
-</body>
-</html>
+<?php include __DIR__ . '/View/layout/footer.php'; ?>

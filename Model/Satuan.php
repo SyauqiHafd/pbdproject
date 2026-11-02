@@ -14,7 +14,6 @@ class Satuan extends Model
         ];
     }
 
-    /** [id => nama] untuk pilihan satuan pada form Barang */
     public function options(): array
     {
         $out = [];

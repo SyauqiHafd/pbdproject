@@ -1,5 +1,4 @@
 <?php
-/** Fungsi string multibyte yang tetap jalan walau ekstensi mbstring tidak aktif. */
 class Str
 {
     public static function len(string $s): int

@@ -7,7 +7,6 @@ class Database
     private $username = 'root';
     private $password = '';
 
-    /** Koneksi dipakai bersama supaya satu halaman tidak membuka banyak koneksi. */
     private static $shared = null;
 
     public function connect()
@@ -15,14 +14,12 @@ class Database
         if (self::$shared !== null) {
             return self::$shared;
         }
-        // Ekstensi pdo_mysql wajib aktif di php.ini yang dipakai Apache
         if (!extension_loaded('pdo_mysql')) {
             http_response_code(500);
             exit('Ekstensi PHP <b>pdo_mysql</b> belum aktif. Buka php.ini, hapus tanda ; pada baris '
                . '<code>extension=pdo_mysql</code>, lalu restart Apache.');
         }
 
-        // Nama konstanta berbeda antar versi PHP (PHP 8.4+ memakai Pdo\Mysql)
         $foundRows = defined('Pdo\\Mysql::ATTR_FOUND_ROWS')
             ? constant('Pdo\\Mysql::ATTR_FOUND_ROWS')
             : constant('PDO::MYSQL_ATTR_FOUND_ROWS');

@@ -13,7 +13,6 @@ class Role extends Model
         ];
     }
 
-    /** [idrole => nama_role] */
     public function options(): array
     {
         $out = [];
@@ -23,7 +22,6 @@ class Role extends Model
         return $out;
     }
 
-    /** Ubah nama role menjadi jenis akses aplikasi: 'admin', 'staff', atau null (tidak boleh login). */
     public static function kind($namaRole): ?string
     {
         $n = strtolower((string) $namaRole);

@@ -5,7 +5,6 @@ class Pengguna extends Model
     protected $entity = 'pengguna';
     protected $label  = 'Pengguna';
 
-    /** Kolom password TIDAK ikut dibaca untuk tampilan tabel / modal. */
     public function all()
     {
         $stmt = $this->conn->query("SELECT id, username, role FROM {$this->table} ORDER BY id ASC");
@@ -20,7 +19,6 @@ class Pengguna extends Model
         return $row ?: null;
     }
 
-    /** Dipakai halaman login: baris pengguna lengkap dengan password. */
     public function findForLogin(string $username)
     {
         $stmt = $this->conn->prepare("SELECT id, username, passw, role FROM {$this->table} WHERE username = :u LIMIT 1");
@@ -41,7 +39,6 @@ class Pengguna extends Model
 
     protected function prepare(string $mode, array $clean, array $ctx, $id): array
     {
-        // username harus unik
         $sql    = "SELECT COUNT(*) FROM {$this->table} WHERE username = :u" . ($id !== null ? ' AND id <> :id' : '');
         $params = [':u' => $clean['username']];
         if ($id !== null) {
@@ -53,7 +50,6 @@ class Pengguna extends Model
             throw new InvalidArgumentException('Username sudah dipakai.');
         }
 
-        // jangan mencabut hak admin dari akun yang sedang login
         if ($id !== null && (string) $id === (string) ($ctx['user_id'] ?? '')) {
             $roles = (new Role())->options();
             if (Role::kind($roles[$clean['role']] ?? '') !== 'admin') {
@@ -80,7 +76,6 @@ class Pengguna extends Model
         }
     }
 
-    /** Panjang maksimum kolom password (null bila tidak diketahui). */
     private function passwordColumnLength(): ?int
     {
         try {

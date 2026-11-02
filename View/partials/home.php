@@ -1,5 +1,4 @@
 <?php
-/** Halaman Home. Variabel: $home (dari DashboardController), $canAdd (bool) */
 $chart = $home['chart'];
 $panel = $home['panel'];
 ?>

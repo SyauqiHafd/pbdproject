@@ -2,7 +2,7 @@
 require_once __DIR__ . '/bootstrap.php';
 
 $auth = new AuthController();
-$user = $auth->requireRole('admin');          // wajib login sebagai admin
+$user = $auth->requireRole('admin');         
 
 $barang   = new Barang();
 $satuan   = new Satuan();
@@ -13,7 +13,6 @@ $role     = new Role();
 
 $home = (new DashboardController($user))->admin();
 
-// model yang punya modal tambah/ubah/hapus
 $modals = ['barang' => $barang, 'satuan' => $satuan, 'vendor' => $vendor,
            'margin' => $margin, 'pengguna' => $pengguna, 'role' => $role];
 
@@ -32,7 +31,7 @@ $menus = [
         ['key' => 'role',     'label' => 'Role',     'icon' => 'shield'],
     ]],
     ['heading' => 'Transaksi', 'items' => [
-        ['key' => 'pengadaan', 'label' => 'Pengadaan',           'icon' => 'clipboard'],
+        ['key' => 'pengadaan', 'label' => 'Pengadaan',           'icon' => 'receipt'],
         ['key' => 'penerimaan', 'label' => 'Penerimaan',           'icon' => 'inbox'],
         ['key' => 'penjualaan', 'label' => 'Penjualaan',           'icon' => 'shop'],
         ['key' => 'retur', 'label' => 'Retur',           'icon' => 'rewind'],

@@ -1,5 +1,4 @@
 <?php
-/** Pengubah kode -> teks (sama seperti fungsi label_jenis & label_badan di kode awal). */
 class Label
 {
     public static function jenis($kode): string
@@ -12,7 +11,6 @@ class Label
         return ['P' => 'PT', 'C' => 'CV', 'U' => 'UD', 'D' => 'Toko'][$kode] ?? (string) $kode;
     }
 
-    /** Pil status bergaya dashboard (teks tetap sama: Aktif / Nonaktif / Tidak Aktif). */
     public static function status(bool $aktif, string $on = 'Aktif', string $off = 'Nonaktif'): string
     {
         return $aktif

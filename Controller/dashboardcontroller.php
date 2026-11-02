@@ -1,5 +1,4 @@
 <?php
-/** Menyiapkan data halaman Home: kartu ringkasan (COUNT dari tiap view), grafik batang, dan panel samping. */
 class DashboardController
 {
     private $user;

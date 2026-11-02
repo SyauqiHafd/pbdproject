@@ -15,7 +15,6 @@ class Margin extends Model
         ];
     }
 
-    /** Kolom pengguna & tanggal diisi otomatis. */
     protected function prepare(string $mode, array $clean, array $ctx, $id): array
     {
         $clean['pengguna'] = (int) ($ctx['user_id'] ?? 0);
@@ -28,7 +27,6 @@ class Margin extends Model
         return $this->count('status = 1');
     }
 
-    /** Persentase margin aktif terbaru (null bila tidak ada). */
     public function currentPercent()
     {
         $stmt = $this->conn->query("SELECT persen FROM {$this->table} WHERE status = 1 ORDER BY tglbuat DESC, id DESC LIMIT 1");

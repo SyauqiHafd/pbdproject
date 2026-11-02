@@ -1,5 +1,4 @@
 <?php
-/** Menangani tambah / ubah / hapus dari modal. Hanya role admin. */
 class CrudController
 {
     private $entities = [

@@ -1,11 +1,5 @@
 <?php
-/**
- * Model dasar. Setiap tabel/view cukup mendefinisikan:
- *   $table      sumber data yang dibaca (view)
- *   $writeTable (opsional) tabel tujuan INSERT/UPDATE/DELETE bila view tidak bisa ditulis langsung
- *   $primaryKey kolom kunci
- *   fields()    definisi input form (dipakai untuk modal & validasi)
- */
+
 class Model
 {
     protected $conn;
@@ -46,7 +40,7 @@ class Model
         return $row ?: null;
     }
 
-    /** SELECT COUNT(*) FROM view [WHERE ...] */
+    /** SELECT COUNT(*) FROM view*/
     public function count(string $where = '1=1', array $params = []): int
     {
         $stmt = $this->conn->prepare("SELECT COUNT(*) FROM {$this->table} WHERE {$where}");
@@ -54,15 +48,12 @@ class Model
         return (int) $stmt->fetchColumn();
     }
 
-    /* --------------------------- FORM FIELDS -------------------------- */
 
-    /** @return array<int,array> definisi field: name,label,type,required,options,... */
     public function fields(): array
     {
         return [];
     }
 
-    /** Data satu baris yang aman dikirim ke modal edit (tanpa field password). */
     public function rowForForm(array $row): array
     {
         $out = [];
@@ -78,7 +69,6 @@ class Model
 
     /* ------------------------------ WRITE ----------------------------- */
 
-    /** Tambah ($id = null) atau ubah ($id diisi). Melempar InvalidArgumentException bila input salah. */
     public function save($id, array $input, array $ctx = []): void
     {
         $mode  = $id === null ? 'create' : 'update';
@@ -102,13 +92,11 @@ class Model
         }
     }
 
-    /** Hook: ubah/tambah kolom sebelum disimpan. Return [data, raw(SQL mentah, mis. NOW())]. */
     protected function prepare(string $mode, array $clean, array $ctx, $id): array
     {
         return [$clean, []];
     }
 
-    /** Hook: lempar InvalidArgumentException untuk membatalkan penghapusan. */
     protected function guardDelete($id, array $ctx): void
     {
     }

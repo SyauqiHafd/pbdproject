@@ -3,7 +3,6 @@
 </div>
 
 <?php
-// Modal tambah/ubah (hanya jika ada model yang boleh diedit) + modal hapus + notifikasi
 if (!empty($modals)) {
     include __DIR__ . '/../partials/modals.php';
 }

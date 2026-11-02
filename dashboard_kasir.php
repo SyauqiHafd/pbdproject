@@ -2,14 +2,14 @@
 require_once __DIR__ . '/bootstrap.php';
 
 $auth = new AuthController();
-$user = $auth->requireRole('staff');          // wajib login sebagai staff
+$user = $auth->requireRole('staff');          
 
 $barang = new Barang();
 $margin = new Margin();
 
 $home = (new DashboardController($user))->staff();
 
-$modals = [];   // staff hanya melihat data (tanpa tambah/ubah/hapus)
+$modals = [];   
 
 $menus = [
     ['heading' => null, 'items' => [

@@ -1,13 +1,11 @@
 <?php
 class AuthController
 {
-    /** Pengguna yang sedang login: [id, username, role (admin|staff), role_name] atau null. */
     public function user(): ?array
     {
         return Session::get('user');
     }
 
-    /** Halaman wajib login dengan role tertentu; selain itu dialihkan. */
     public function requireRole(string $role): array
     {
         $user = $this->user();

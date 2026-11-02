@@ -1,8 +1,5 @@
 <?php
-/**
- * Kerangka halaman dashboard (sidebar + topbar).
- * Variabel: $pageTitle, $user, $menus, $active, $searchPlaceholder, $roleChip
- */
+
 $displayName = ucfirst($user['username']);
 ?>
 <!DOCTYPE html>

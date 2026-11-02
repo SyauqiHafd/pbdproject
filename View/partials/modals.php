@@ -1,8 +1,5 @@
 <?php
-/**
- * Modal tambah/ubah per tabel (dibuat otomatis dari Model::fields()) + modal konfirmasi hapus.
- * Variabel: $modals = [entity => Model]
- */
+
 $csrf = Session::csrfToken();
 ?>
 <?php foreach ($modals as $key => $model): ?>

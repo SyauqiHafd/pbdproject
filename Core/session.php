@@ -41,7 +41,7 @@ class Session
         session_destroy();
     }
 
-    /* ---- flash message (tampil sekali) ---- */
+    //flash message
     public static function flash(string $type, string $message): void
     {
         $_SESSION['flash'][] = ['type' => $type, 'message' => $message];
@@ -54,7 +54,6 @@ class Session
         return $flash;
     }
 
-    /* ---- CSRF ---- */
     public static function csrfToken(): string
     {
         if (empty($_SESSION['csrf'])) {

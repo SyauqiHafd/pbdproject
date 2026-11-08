@@ -5,6 +5,13 @@ class Satuan extends Model
     protected $entity = 'satuan';
     protected $label  = 'Satuan';
 
+    protected $writeTable = 'satuan';
+    protected $writePk    = ['idsatuan', 'id'];
+    protected $columnMap  = [
+        'name'   => ['nama_satuan', 'nama', 'name'],
+        'status' => ['status'],
+    ];
+
     public function fields(): array
     {
         return [

@@ -7,6 +7,7 @@ class Database
     private $username = 'root';
     private $password = '';
 
+    /** Koneksi dipakai bersama supaya satu halaman tidak membuka banyak koneksi. */
     private static $shared = null;
 
     public function connect()
@@ -33,7 +34,6 @@ class Database
                     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                     PDO::ATTR_EMULATE_PREPARES   => false,
-                    // rowCount() = jumlah baris yang cocok (bukan hanya yang berubah)
                     $foundRows                   => true,
                 ]
             );

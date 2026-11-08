@@ -3,11 +3,17 @@
 class Model
 {
     protected $conn;
-    protected $table;
-    protected $writeTable = null;
-    protected $primaryKey = 'id';
+    protected $table;                 
+    protected $primaryKey = 'id';     
+    protected $orderDir   = 'ASC';
     protected $entity     = '';
     protected $label      = '';
+
+    protected $writeTable = null;     
+    protected $writePk    = [];       
+    protected $columnMap  = [];       
+
+    private static $schemaCache = [];
 
     public function __construct()
     {
@@ -19,16 +25,40 @@ class Model
     public function label(): string      { return $this->label; }
     public function primaryKey(): string { return $this->primaryKey; }
 
-    protected function target(): string
+    public static function transaksiSiap(): bool
     {
-        return $this->writeTable ?: $this->table;
-    }
+        static $siap = null;
+        if ($siap !== null) {
+            return $siap;
+        }
+        try {
+            $conn = (new Database())->connect();
+            $rutin = ['fn_persen_ppn', 'fn_hitung_ppn', 'fn_stok_barang', 'fn_id_margin_aktif', 'fn_harga_jual',
+                      'sp_hitung_pengadaan', 'sp_hitung_penjualan', 'sp_buat_pengadaan', 'sp_tambah_detail_pengadaan',
+                      'sp_proses_penerimaan', 'sp_buat_penjualan', 'sp_tambah_detail_penjualan'];
+            $trigger = ['trg_detail_pengadaan_bi', 'trg_detail_pengadaan_ai', 'trg_detail_penerimaan_ai',
+                        'trg_detail_penjualan_bi', 'trg_detail_penjualan_ai'];
 
-    /* ------------------------------ READ ------------------------------ */
+            $q = $conn->prepare('SELECT COUNT(*) FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_NAME IN ('
+                . implode(',', array_fill(0, count($rutin), '?')) . ')');
+            $q->execute($rutin);
+            $nRutin = (int) $q->fetchColumn();
+
+            $q = $conn->prepare('SELECT COUNT(*) FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA = DATABASE() AND TRIGGER_NAME IN ('
+                . implode(',', array_fill(0, count($trigger), '?')) . ')');
+            $q->execute($trigger);
+            $nTrigger = (int) $q->fetchColumn();
+
+            $siap = $nRutin === count($rutin) && $nTrigger === count($trigger);
+        } catch (PDOException $e) {
+            $siap = false;
+        }
+        return $siap;
+    }
 
     public function all()
     {
-        $stmt = $this->conn->query("SELECT * FROM {$this->table} ORDER BY {$this->primaryKey} ASC");
+        $stmt = $this->conn->query("SELECT * FROM {$this->table} ORDER BY {$this->primaryKey} {$this->orderDir}");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -40,14 +70,12 @@ class Model
         return $row ?: null;
     }
 
-    /** SELECT COUNT(*) FROM view*/
     public function count(string $where = '1=1', array $params = []): int
     {
         $stmt = $this->conn->prepare("SELECT COUNT(*) FROM {$this->table} WHERE {$where}");
         $stmt->execute($params);
         return (int) $stmt->fetchColumn();
     }
-
 
     public function fields(): array
     {
@@ -67,7 +95,6 @@ class Model
         return $out;
     }
 
-    /* ------------------------------ WRITE ----------------------------- */
 
     public function save($id, array $input, array $ctx = []): void
     {
@@ -85,7 +112,8 @@ class Model
     public function remove($id, array $ctx = []): void
     {
         $this->guardDelete($id, $ctx);
-        $stmt = $this->conn->prepare("DELETE FROM {$this->target()} WHERE {$this->primaryKey} = :id");
+        $sql  = 'DELETE FROM ' . $this->q($this->targetTable()) . ' WHERE ' . $this->q($this->targetPk()) . ' = :id';
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute([':id' => $id]);
         if ($stmt->rowCount() === 0) {
             throw new InvalidArgumentException('Data tidak ditemukan.');
@@ -99,6 +127,11 @@ class Model
 
     protected function guardDelete($id, array $ctx): void
     {
+    }
+
+    protected function valueForTable(string $field, $value, string $column)
+    {
+        return $value;
     }
 
     protected function validate(array $input, string $mode): array
@@ -158,30 +191,144 @@ class Model
         return $clean;
     }
 
+
+    protected function q(string $identifier): string
+    {
+        return '`' . str_replace('`', '``', $identifier) . '`';
+    }
+
+    protected function targetTable(): string
+    {
+        return $this->writeTable ?: $this->table;
+    }
+
+    protected function schema(): array
+    {
+        $t = $this->targetTable();
+        if (!isset(self::$schemaCache[$t])) {
+            try {
+                $rows = $this->conn->query('SHOW COLUMNS FROM ' . $this->q($t))->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+                throw new InvalidArgumentException("Tabel '{$t}' tidak ditemukan di database. Periksa nama tabel pada properti \$writeTable.");
+            }
+            $cols = [];
+            foreach ($rows as $r) {
+                $cols[strtolower($r['Field'])] = [
+                    'name' => $r['Field'],
+                    'auto' => stripos((string) $r['Extra'], 'auto_increment') !== false,
+                ];
+            }
+            self::$schemaCache[$t] = $cols;
+        }
+        return self::$schemaCache[$t];
+    }
+
+    private function pickColumn(array $candidates, string $what): string
+    {
+        $schema = $this->schema();
+        foreach ($candidates as $c) {
+            if (isset($schema[strtolower($c)])) {
+                return $schema[strtolower($c)]['name'];
+            }
+        }
+        $ada = implode(', ', array_column($schema, 'name'));
+        throw new InvalidArgumentException(
+            "Kolom untuk {$what} tidak ditemukan di tabel '{$this->targetTable()}' (dicari: " . implode('/', $candidates)
+            . "). Kolom yang ada: {$ada}. Sesuaikan \$columnMap / \$writePk pada class " . static::class . '.'
+        );
+    }
+
+    protected function colFor(string $field): string
+    {
+        if (!$this->writeTable) {
+            return $field;
+        }
+        return $this->pickColumn($this->columnMap[$field] ?? [$field], "'{$field}'");
+    }
+
+    protected function targetPk(): string
+    {
+        if (!$this->writeTable) {
+            return $this->primaryKey;
+        }
+        return $this->pickColumn($this->writePk ?: [$this->primaryKey], 'kunci utama');
+    }
+
+
     private function insertRow(array $data, array $raw): void
     {
-        $cols   = array_merge(array_keys($data), array_keys($raw));
-        $values = array_merge(array_map(function ($c) { return ':' . $c; }, array_keys($data)), array_values($raw));
-        $sql    = "INSERT INTO {$this->target()} (" . implode(', ', $cols) . ') VALUES (' . implode(', ', $values) . ')';
-        $params = [];
-        foreach ($data as $k => $v) {
-            $params[':' . $k] = $v;
+        $cols = [];   
+        foreach ($data as $field => $value) {
+            $col        = $this->colFor($field);
+            $cols[$col] = $this->valueForTable($field, $value, $col);
         }
-        $this->conn->prepare($sql)->execute($params);
+        $exprs = []; 
+        foreach ($raw as $field => $expr) {
+            $exprs[$this->colFor($field)] = $expr;
+        }
+
+        // kunci utama bukan AUTO_INCREMENT -> buat id berikutnya sendiri
+        $needsId = false;
+        if ($this->writeTable) {
+            $pk = $this->targetPk();
+            $needsId = empty($this->schema()[strtolower($pk)]['auto']);
+        }
+
+        $table = $this->q($this->targetTable());
+        $run = function (?int $newId) use ($cols, $exprs, $table) {
+            $names  = [];
+            $marks  = [];
+            $params = [];
+            if ($newId !== null) {
+                $names[]  = $this->q($this->targetPk());
+                $marks[]  = '?';
+                $params[] = $newId;
+            }
+            foreach ($cols as $c => $v) {
+                $names[]  = $this->q($c);
+                $marks[]  = '?';
+                $params[] = $v;
+            }
+            foreach ($exprs as $c => $expr) {
+                $names[] = $this->q($c);
+                $marks[] = $expr;
+            }
+            $sql = "INSERT INTO {$table} (" . implode(', ', $names) . ') VALUES (' . implode(', ', $marks) . ')';
+            $this->conn->prepare($sql)->execute($params);
+        };
+
+        if (!$needsId) {
+            $run(null);
+            return;
+        }
+
+        $this->conn->beginTransaction();
+        try {
+            $stmt = $this->conn->query('SELECT COALESCE(MAX(' . $this->q($this->targetPk()) . "), 0) + 1 FROM {$table} FOR UPDATE");
+            $run((int) $stmt->fetchColumn());
+            $this->conn->commit();
+        } catch (Throwable $e) {
+            $this->conn->rollBack();
+            throw $e;
+        }
     }
 
     private function updateRow($id, array $data, array $raw): void
     {
         $set    = [];
-        $params = [':__id' => $id];
-        foreach ($data as $k => $v) {
-            $set[] = "$k = :$k";
-            $params[':' . $k] = $v;
+        $params = [];
+        foreach ($data as $field => $value) {
+            $col      = $this->colFor($field);
+            $set[]    = $this->q($col) . ' = ?';
+            $params[] = $this->valueForTable($field, $value, $col);
         }
-        foreach ($raw as $k => $expr) {
-            $set[] = "$k = $expr";
+        foreach ($raw as $field => $expr) {
+            $set[] = $this->q($this->colFor($field)) . ' = ' . $expr;
         }
-        $sql  = "UPDATE {$this->target()} SET " . implode(', ', $set) . " WHERE {$this->primaryKey} = :__id";
+        $params[] = $id;
+
+        $sql  = 'UPDATE ' . $this->q($this->targetTable()) . ' SET ' . implode(', ', $set)
+              . ' WHERE ' . $this->q($this->targetPk()) . ' = ?';
         $stmt = $this->conn->prepare($sql);
         $stmt->execute($params);
         if ($stmt->rowCount() === 0) {

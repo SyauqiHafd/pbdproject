@@ -5,6 +5,26 @@ class Pengguna extends Model
     protected $entity = 'pengguna';
     protected $label  = 'Pengguna';
 
+    protected $writeTable = 'user';
+    protected $writePk    = ['iduser', 'id'];
+    protected $columnMap  = [
+        'username' => ['username'],
+        'passw'    => ['password', 'passw', 'pass'],
+        'role'     => ['idrole', 'role', 'nama_role'],
+    ];
+
+    protected function valueForTable(string $field, $value, string $column)
+    {
+        if ($field === 'role' && preg_match('/^id/i', $column)) {
+            $id = array_search((string) $value, array_map('strval', (new Role())->options()), true);
+            if ($id === false) {
+                throw new InvalidArgumentException('Role tidak ditemukan.');
+            }
+            return $id;
+        }
+        return $value;
+    }
+
     public function all()
     {
         $stmt = $this->conn->query("SELECT id, username, role FROM {$this->table} ORDER BY id ASC");
@@ -33,7 +53,7 @@ class Pengguna extends Model
             ['name' => 'username', 'label' => 'Username', 'type' => 'text', 'required' => true, 'max' => 45],
             ['name' => 'passw', 'label' => 'Password', 'type' => 'password', 'required' => true, 'max' => 72],
             ['name' => 'role',     'label' => 'Role', 'type' => 'select', 'required' => true,
-             'options' => (new Role())->options()],
+             'options' => (new Role())->names()],
         ];
     }
 
@@ -51,8 +71,7 @@ class Pengguna extends Model
         }
 
         if ($id !== null && (string) $id === (string) ($ctx['user_id'] ?? '')) {
-            $roles = (new Role())->options();
-            if (Role::kind($roles[$clean['role']] ?? '') !== 'admin') {
+            if (Role::kind($clean['role']) !== 'admin') {
                 throw new InvalidArgumentException('Role akun yang sedang login harus tetap Admin.');
             }
         }
@@ -79,11 +98,13 @@ class Pengguna extends Model
     private function passwordColumnLength(): ?int
     {
         try {
+            $table  = $this->targetTable();
+            $column = $this->colFor('passw');
             $stmt = $this->conn->prepare(
                 "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.COLUMNS
-                 WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :t AND COLUMN_NAME = 'passw'"
+                 WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :t AND COLUMN_NAME = :c"
             );
-            $stmt->execute([':t' => $this->table]);
+            $stmt->execute([':t' => $table, ':c' => $column]);
             $len = $stmt->fetchColumn();
             return $len === false || $len === null ? null : (int) $len;
         } catch (PDOException $e) {

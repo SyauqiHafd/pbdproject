@@ -1,11 +1,13 @@
 <?php
 class AuthController
 {
+    /** Pengguna yang sedang login: [id, username, role (admin|staff), role_name] atau null. */
     public function user(): ?array
     {
         return Session::get('user');
     }
 
+    /** Halaman wajib login dengan role tertentu; selain itu dialihkan. */
     public function requireRole(string $role): array
     {
         $user = $this->user();
@@ -46,13 +48,16 @@ class AuthController
             return ['ok' => false, 'error' => 'Username atau password salah.'];
         }
 
-        $roles    = (new Role())->options();
+        // kolom role berisi nama role (mis. 'admin'); bila berisi id angka, dicocokkan lewat view roles
         $roleName = (string) $row['role'];
-        $kind     = Role::kind($roleName);
+        $roles    = (new Role())->options();
         if (ctype_digit($roleName) && isset($roles[$roleName])) {
             $roleName = $roles[$roleName];
         }
         $kind = Role::kind($roleName);
+        if ($kind === null) {
+            return ['ok' => false, 'error' => 'Role akun ini tidak diizinkan masuk (hanya Admin dan Staff).'];
+        }
 
         Session::regenerate();
         Session::set('user', [

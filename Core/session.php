@@ -26,6 +26,13 @@ class Session
         $_SESSION[$key] = $value;
     }
 
+    public static function pull(string $key, $default = null)
+    {
+        $value = $_SESSION[$key] ?? $default;
+        unset($_SESSION[$key]);
+        return $value;
+    }
+
     public static function regenerate(): void
     {
         session_regenerate_id(true);
@@ -41,7 +48,6 @@ class Session
         session_destroy();
     }
 
-    //flash message
     public static function flash(string $type, string $message): void
     {
         $_SESSION['flash'][] = ['type' => $type, 'message' => $message];

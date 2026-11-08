@@ -19,7 +19,14 @@ class Icon
         'activity' => '<path d="M3 12h4l3-8 4 16 3-8h4"/>',
         'edit'     => '<path d="M4 20h4L19 9l-4-4L4 16z"/>',
         'trash'    => '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>',
+        'clipboard'=> '<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/>',
+        'chevron'  => '<path d="m6 9 6 6 6-6"/>',
+        'cart'     => '<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h2.5l2 11h10.5l2-8H6.5"/>',
+        'inbox'    => '<path d="m3 13 3-8h12l3 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1 3h6l1-3h5"/>',
+        'undo'     => '<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
+        'layers'   => '<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 12.5 9 5 9-5"/>',
         'x'        => '<path d="M6 6l12 12M18 6 6 18"/>',
+        'clock'    => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     ];
 
     public static function svg(string $name, int $size = 18): string

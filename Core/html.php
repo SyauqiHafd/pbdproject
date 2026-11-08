@@ -19,4 +19,13 @@ class Html
              . '" data-id="' . self::e($id) . '" data-name="' . self::e($name) . '">Hapus</button>'
              . '</td>';
     }
+
+    public static function detailAttr(string $title, string $sub, array $lines, array $totals): string
+    {
+        $rows = [];
+        foreach ($lines as $l) {
+            $rows[] = [(string) $l['nama'], Label::angka($l['jumlah']), Label::rupiah($l['harga']), Label::rupiah($l['subtotal'])];
+        }
+        return self::json(['title' => $title, 'sub' => $sub, 'lines' => $rows, 'totals' => $totals]);
+    }
 }

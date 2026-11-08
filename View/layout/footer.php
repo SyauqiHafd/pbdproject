@@ -6,6 +6,9 @@
 if (!empty($modals)) {
     include __DIR__ . '/../partials/modals.php';
 }
+if (!empty($transaksiModals)) {
+    include __DIR__ . '/../partials/transaksi_modals.php';
+}
 ?>
 
 <?php $flashes = Session::pullFlash(); ?>

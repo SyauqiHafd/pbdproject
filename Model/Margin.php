@@ -5,6 +5,16 @@ class Margin extends Model
     protected $entity = 'margin';
     protected $label  = 'Margin';
 
+    protected $writeTable = 'margin_penjualan';
+    protected $writePk    = ['idmargin_penjualan', 'id'];
+    protected $columnMap  = [
+        'persen'    => ['persen'],
+        'status'    => ['status'],
+        'pengguna'  => ['iduser', 'pengguna'],
+        'tglbuat'   => ['created_at', 'tglbuat'],
+        'tglupdate' => ['updated_at', 'tglupdate'],
+    ];
+
     public function fields(): array
     {
         return [

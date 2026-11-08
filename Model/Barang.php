@@ -5,6 +5,17 @@ class Barang extends Model
     protected $entity = 'barang';
     protected $label  = 'Barang';
 
+    // tulis langsung ke tabel asli
+    protected $writeTable = 'barang';
+    protected $writePk    = ['idbarang', 'id'];
+    protected $columnMap  = [
+        'name'   => ['nama', 'nama_barang', 'name'],
+        'jenis'  => ['jenis'],
+        'satuan' => ['idsatuan', 'satuan'],
+        'harga'  => ['harga', 'harga_jual'],
+        'status' => ['status'],
+    ];
+
     public function fields(): array
     {
         return [

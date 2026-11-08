@@ -30,10 +30,26 @@ $displayName = ucfirst($user['username']);
         <ul>
           <?php foreach ($group['items'] as $item): ?>
           <li>
-            <a href="?menu=<?= Html::e($item['key']) ?>" data-menu="<?= Html::e($item['key']) ?>"
-               class="nav-link<?= $item['key'] === $active ? ' active' : '' ?>">
-              <?= Icon::svg($item['icon']) ?><span><?= Html::e($item['label']) ?></span>
-            </a>
+            <?php if (!empty($item['children'])): ?>
+              <?php $open = in_array($active, array_column($item['children'], 'key'), true); ?>
+              <button type="button" class="nav-link nav-parent<?= $open ? ' open' : '' ?>" data-toggle="sub-<?= Html::e($item['key']) ?>" aria-expanded="<?= $open ? 'true' : 'false' ?>">
+                <?= Icon::svg($item['icon']) ?><span><?= Html::e($item['label']) ?></span>
+                <?= Icon::svg('chevron', 16) ?>
+              </button>
+              <ul class="sub<?= $open ? '' : ' hidden' ?>" id="sub-<?= Html::e($item['key']) ?>">
+                <?php foreach ($item['children'] as $child): ?>
+                <li>
+                  <a href="?menu=<?= Html::e($child['key']) ?>" data-menu="<?= Html::e($child['key']) ?>"
+                     class="nav-link sub-link<?= $child['key'] === $active ? ' active' : '' ?>"><span><?= Html::e($child['label']) ?></span></a>
+                </li>
+                <?php endforeach; ?>
+              </ul>
+            <?php else: ?>
+              <a href="?menu=<?= Html::e($item['key']) ?>" data-menu="<?= Html::e($item['key']) ?>"
+                 class="nav-link<?= $item['key'] === $active ? ' active' : '' ?>">
+                <?= Icon::svg($item['icon']) ?><span><?= Html::e($item['label']) ?></span>
+              </a>
+            <?php endif; ?>
           </li>
           <?php endforeach; ?>
         </ul>

@@ -7,7 +7,7 @@
   <table class="tbl">
     <thead>
       <tr>
-        <th class="px-4 py-3">ID</th><th class="px-4 py-3">Nama</th>
+        <th class="px-4 py-3">No.</th><th class="px-4 py-3">Nama</th>
         <th class="px-4 py-3">Jenis</th><th class="px-4 py-3">Satuan</th>
         <th class="px-4 py-3">Harga</th><th class="px-4 py-3">Status</th>
         <th class="px-4 py-3">Aksi</th>

@@ -5,6 +5,14 @@ class Vendor extends Model
     protected $entity = 'vendor';
     protected $label  = 'Vendor';
 
+    protected $writeTable = 'vendor';
+    protected $writePk    = ['idvendor', 'id'];
+    protected $columnMap  = [
+        'nama_corp' => ['nama_vendor', 'nama_corp', 'nama'],
+        'badan'     => ['badan_hukum', 'badan'],
+        'status'    => ['status'],
+    ];
+
     public function fields(): array
     {
         return [

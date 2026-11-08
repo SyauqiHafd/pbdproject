@@ -59,12 +59,13 @@ class DashboardController
     {
         $barang = new Barang();
         $margin = new Margin();
+        $jual   = new Penjualan();
 
         $current = $margin->currentPercent();
         $stats = [
             ['label' => 'Jumlah Barang Aktif',      'value' => $barang->countActive(),                   'icon' => 'box',     'tone' => 'pink'],
             ['label' => 'Margin Berlaku Hari Ini',  'value' => $current === null ? '-' : number_format($current, 2) . '%', 'icon' => 'percent', 'tone' => 'blend'],
-            ['label' => 'Transaksi Hari Ini',       'value' => 'N/A',                                    'icon' => 'receipt', 'tone' => 'lilac'],
+            ['label' => 'Transaksi Hari Ini',       'value' => $jual->countToday(),                      'icon' => 'receipt', 'tone' => 'lilac'],
         ];
 
         $bars = [
@@ -95,7 +96,6 @@ class DashboardController
         ];
     }
 
-    /** Hitung tinggi batang (persen) dan label sumbu Y. */
     private function chart(string $title, string $subtitle, array $bars): array
     {
         $values  = array_column($bars, 1);

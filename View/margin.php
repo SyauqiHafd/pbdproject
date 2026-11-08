@@ -6,7 +6,7 @@
 <div class="tbl-wrap">
   <table class="tbl">
     <thead>
-      <tr><th class="px-4 py-3">ID</th><th class="px-4 py-3">Margin</th><th class="px-4 py-3">Dibuat</th><th class="px-4 py-3">Diubah</th><th class="px-4 py-3">Pengguna</th><th class="px-4 py-3">Status</th><th class="px-4 py-3">Aksi</th></tr>
+      <tr><th class="px-4 py-3">No.</th><th class="px-4 py-3">Margin</th><th class="px-4 py-3">Dibuat</th><th class="px-4 py-3">Diubah</th><th class="px-4 py-3">Pengguna</th><th class="px-4 py-3">Status</th><th class="px-4 py-3">Aksi</th></tr>
     </thead>
     <tbody>
       <?php foreach ($data as $row): ?>

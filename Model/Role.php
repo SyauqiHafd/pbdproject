@@ -6,6 +6,12 @@ class Role extends Model
     protected $entity     = 'role';
     protected $label      = 'Role';
 
+    protected $writeTable = 'role';
+    protected $writePk    = ['idrole', 'id'];
+    protected $columnMap  = [
+        'nama_role' => ['nama_role', 'nama'],
+    ];
+
     public function fields(): array
     {
         return [
@@ -14,6 +20,15 @@ class Role extends Model
     }
 
     public function options(): array
+    {
+        $out = [];
+        foreach ($this->all() as $row) {
+            $out[$row['idrole']] = $row['nama_role'];
+        }
+        return $out;
+    }
+
+    public function names(): array
     {
         $out = [];
         foreach ($this->all() as $row) {
